@@ -32,7 +32,7 @@ Route::middleware([
 
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return view('backend.dashboard');
     })->name('dashboard');
 });
 
