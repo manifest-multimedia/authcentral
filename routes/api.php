@@ -5,20 +5,15 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    if ($request->user()) {
+        // Return user data if authenticated
+        return response()->json([
+            'email' => $request->user()->email,
+            'name' => $request->user()->name,
+            'role' => $request->user()->role ?? 'user',
+        ]);
+    }
+
+    // Return error if user is not authenticated
+    return response()->json(['error' => 'Unauthorized'], 401);
 })->middleware('auth:sanctum');
-
-
-// Route::post('/login', function (Request $request) {
-//     $credentials = $request->only('email', 'password');
-
-//     if (Auth::attempt($credentials)) {
-//         $user = Auth::user();
-//         // Issue token for the user
-//         $token = $user->createToken('auth-token')->plainTextToken;
-
-//         return response()->json(['token' => $token, 'user' => $user], 200);
-//     }
-
-//     return response()->json(['error' => 'Unauthorized'], 401);
-// });
