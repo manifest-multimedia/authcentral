@@ -9,5 +9,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/test', function (Request $request) {
-    return response()->json('This endpoint works');
+    $response = "Test Wroks";
+    print_r($response);
+    // return response()->json($response);
 });

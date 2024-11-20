@@ -24,6 +24,16 @@ Route::get('/login', function (Request $request) {
     }
     return view('login');
 })->name('login');
+
+
+
+
+Route::get('/sign-up', function () {
+    return view('register');
+})->name('sign-up');
+
+
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
