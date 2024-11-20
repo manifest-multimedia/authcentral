@@ -5,7 +5,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return redirect('/dashboard');
+    }
+    return redirect('/login');
 });
 
 Route::get('/login', function (Request $request) {
