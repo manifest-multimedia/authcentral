@@ -1,4 +1,6 @@
-Welcome to your account.
+<x-backend.dashboard> 
+
+    Welcome to your account.
 
 
 {{-- Logout --}}
@@ -8,3 +10,6 @@ Welcome to your account.
 
     <button type="submit">Logout</button>
 </form>
+
+
+</x-backend.dashboard>

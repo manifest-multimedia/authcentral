@@ -44,7 +44,7 @@ Route::middleware([
 
 
 ])->group(function () {
-    Route::get('/dashboard', function () {
+    Route::get('/portal', function () {
         return view('backend.dashboard');
     })->name('dashboard');
 });
