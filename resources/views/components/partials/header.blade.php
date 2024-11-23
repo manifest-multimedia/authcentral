@@ -39,7 +39,7 @@
 							<!--begin::Wrapper-->
 							<div class="flex-wrap d-flex align-items-center">
 								<!--begin::Search-->
-								<div class="py-3 header-search py-lg-0 me-3">
+								{{-- <div class="py-3 header-search py-lg-0 me-3">
 									<!--begin::Search-->
 									<div id="kt_header_search" class="header-search d-flex align-items-center w-lg-250px" data-kt-search-keypress="true" data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu" data-kt-search-responsive="false" data-kt-menu-trigger="auto" data-kt-menu-permanent="true" data-kt-menu-placement="bottom-end">
 										<!--begin::Tablet and mobile search toggle-->
@@ -710,12 +710,12 @@
 										<!--end::Menu-->
 									</div>
 									<!--end::Search-->
-								</div>
+								</div> --}}
 								<!--end::Search-->
 								<!--begin::Action-->
 								<div class="py-3 d-flex align-items-center py-lg-0">
 									<!--begin::Item-->
-									<div class="me-3">
+									{{-- <div class="me-3">
 										<a href="#" class="btn btn-icon btn-custom btn-active-color-primary position-relative" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
 											<i class="ki-duotone ki-notification-bing fs-1">
 												<span class="path1"></span>
@@ -1227,7 +1227,7 @@
 											<!--end::Tab content-->
 										</div>
 										<!--end::Menu-->
-									</div>
+									</div> --}}
 									<!--end::Item-->
 									<!--begin::Item-->
 									<div class="me-3">
@@ -1244,21 +1244,21 @@
 												<div class="px-3 menu-content d-flex align-items-center">
 													<!--begin::Avatar-->
 													<div class="symbol symbol-50px me-5">
-														<img alt="Logo" src="assets/media/avatars/300-1.jpg" />
+														<img alt="Avatar" src="{{ Auth::user()->profile_photo_url }}" />
 													</div>
 													<!--end::Avatar-->
 													<!--begin::Username-->
 													<div class="d-flex flex-column">
-														<div class="fw-bold d-flex align-items-center fs-5">Max Smith 
-														<span class="px-2 py-1 badge badge-light-success fw-bold fs-8 ms-2">Pro</span></div>
-														<a href="#" class="fw-semibold text-muted text-hover-primary fs-7">max@kt.com</a>
+														<div class="fw-bold d-flex align-items-center fs-5">{{ Auth::user()->name }}
+														<span class="px-2 py-1 badge badge-light-success fw-bold fs-8 ms-2">{{ Str::ucfirst(Auth::user()->role) }}</span></div>
+														<a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{ Auth::user()->email }}</a>
 													</div>
 													<!--end::Username-->
 												</div>
 											</div>
 											<!--end::Menu item-->
 											<!--begin::Menu separator-->
-											<div class="my-2 separator"></div>
+											{{-- <div class="my-2 separator"></div>
 											<!--end::Menu separator-->
 											<!--begin::Menu item-->
 											<div class="px-5 menu-item">
@@ -1330,7 +1330,7 @@
 											<!--begin::Menu item-->
 											<div class="px-5 menu-item">
 												<a href="account/statements.html" class="px-5 menu-link">My Statements</a>
-											</div>
+											</div> --}}
 											<!--end::Menu item-->
 											<!--begin::Menu separator-->
 											<div class="my-2 separator"></div>
@@ -1346,14 +1346,14 @@
 												<div class="py-4 menu-sub menu-sub-dropdown w-175px">
 													<!--begin::Menu item-->
 													<div class="px-3 menu-item">
-														<a href="account/settings.html" class="px-5 menu-link d-flex active">
+														<a href="javascript:void(0);" class="px-5 menu-link d-flex active">
 														<span class="symbol symbol-20px me-4">
-															<img class="rounded-1" src="assets/media/flags/united-states.svg" alt="" />
+															<img class="rounded-1" src="{{ asset('dashboard/assets/media/flags/united-states.svg') }}" alt="English" />
 														</span>English</a>
 													</div>
 													<!--end::Menu item-->
 													<!--begin::Menu item-->
-													<div class="px-3 menu-item">
+													{{-- <div class="px-3 menu-item">
 														<a href="account/settings.html" class="px-5 menu-link d-flex">
 														<span class="symbol symbol-20px me-4">
 															<img class="rounded-1" src="assets/media/flags/spain.svg" alt="" />
@@ -1382,7 +1382,7 @@
 														<span class="symbol symbol-20px me-4">
 															<img class="rounded-1" src="assets/media/flags/france.svg" alt="" />
 														</span>French</a>
-													</div>
+													</div> --}}
 													<!--end::Menu item-->
 												</div>
 												<!--end::Menu sub-->
@@ -1395,7 +1395,11 @@
 											<!--end::Menu item-->
 											<!--begin::Menu item-->
 											<div class="px-5 menu-item">
-												<a href="authentication/layouts/corporate/sign-in.html" class="px-5 menu-link">Sign Out</a>
+												{{-- Logout Form --}}
+												<form method="POST" action="{{ route('logout') }}">
+													@csrf
+												<a href="javascript:void(0)" onclick="event.preventDefault(); this.closest('form').submit();" class="px-5 menu-link">Sign Out</a>
+												</form>
 											</div>
 											<!--end::Menu item-->
 										</div>

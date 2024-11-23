@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect('/dashboard');
+        return redirect(route('dashboard'));
     }
     return redirect('/login');
 });
@@ -28,7 +28,7 @@ Route::get('/login', function (Request $request) {
             // Append the token to the redirect URL as a query parameter
             return redirect()->away($redirectUrl . '?token=' . $token);
         }
-        return redirect('/dashboard');
+        return redirect(route('dashboard'));
     }
     return view('login');
 })->name('login');
@@ -56,6 +56,18 @@ Route::middleware([
     Route::get('/college-portal', function () {
         return redirect()->away('https://college.pnmtc.edu.gh');
     })->name('college.portal');
+
+    Route::get('/profile', function () {
+        return view('coming-soon');
+    })->name('account.profile');
+
+    Route::get('/activities', function () {
+        return view('coming-soon');
+    })->name('account.activity');
+
+    Route::get('/2fa', function () {
+        return view('coming-soon');
+    })->name('account.security');
 });
 
 
