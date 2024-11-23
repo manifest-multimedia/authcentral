@@ -11,6 +11,11 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+Route::get('/user-management', function () {
+    return view('backend.users');
+})->name('user.management');
+
+
 Route::get('/login', function (Request $request) {
     $redirectUrl = $request->input('redirect_url') ?? $request->input('redirect_uri');
     if (Auth::check()) {
@@ -47,6 +52,10 @@ Route::middleware([
     Route::get('/portal', function () {
         return view('backend.dashboard');
     })->name('dashboard');
+
+    Route::get('/college-portal', function () {
+        return redirect()->away('https://college.pnmtc.edu.gh');
+    })->name('college.portal');
 });
 
 
