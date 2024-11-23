@@ -1,3 +1,6 @@
 <x-backend.dashboard >
-<livewire:user-management />
+    <div style="margin-top:120px !important">
+
+        <livewire:user-management />
+    </div>
 </x-backend.dashboard>

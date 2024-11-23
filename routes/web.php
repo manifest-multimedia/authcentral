@@ -11,7 +11,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/user-management', function () {
+Route::get('/users', function () {
     return view('backend.users');
 })->name('user.management');
 
