@@ -54,7 +54,11 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/college-portal', function () {
-        return redirect()->away('https://college.pnmtc.edu.gh');
+        $user = Auth::user();
+        // Generate a token for the user
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        return redirect()->away('https://college.pnmtc.edu.gh/auth/callback?token=' . $token);
     })->name('college.portal');
 
     Route::get('/profile', function () {
