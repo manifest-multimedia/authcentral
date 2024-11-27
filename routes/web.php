@@ -40,7 +40,9 @@ Route::get('/sign-up', function () {
     return view('register');
 })->name('sign-up');
 
-
+Route::get('account-reset', function () {
+    return view('resetpass');
+});
 
 Route::middleware([
     'auth:sanctum',
