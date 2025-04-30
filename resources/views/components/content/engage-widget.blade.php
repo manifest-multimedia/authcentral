@@ -8,7 +8,7 @@
             <!--end::Title-->
             <!--begin::Action-->
             <div class="m-0">
-                <a href='#' class="px-6 py-3 btn btn-success fw-semibold" data-bs-toggle="modal" data-bs-target="#kt_modal_create_app">Setup Two-Factor Authentication</a>
+                <a href='{{ route('account.security') }}' class="px-6 py-3 btn btn-success fw-semibold">Setup Two-Factor Authentication</a>
             </div>
             <!--begin::Action-->
         </div>

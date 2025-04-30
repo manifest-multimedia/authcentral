@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfilePhotoController;
+use App\Http\Controllers\ActivityLogController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -64,12 +66,14 @@ Route::middleware([
     })->name('college.portal');
 
     Route::get('/profile', function () {
-        return view('coming-soon');
+        return view('backend.profile.index');
     })->name('account.profile');
+    
+    // Profile photo update route
+    Route::put('/user/profile-photo', [ProfilePhotoController::class, 'update'])->name('user-profile-photo.update');
 
-    Route::get('/activities', function () {
-        return view('coming-soon');
-    })->name('account.activity');
+    // Activity logs route
+    Route::get('/activities', [ActivityLogController::class, 'index'])->name('account.activity');
 
     Route::get('/2fa', function () {
         return view('backend.security.two-factor-auth');
