@@ -11,6 +11,19 @@
             </div>
         </div>
 
+        @if(session('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
+        @if($errors->any())
+        @foreach ($errors as $error)
+            <div class="alert alert-danger">
+                {{ $error }}
+            </div>
+            
+        @endforeach
+        @endif 
         <div class="gap-3 card-body d-flex flex-column">
             
             <div class="row">

@@ -1,3 +1,3 @@
-<x-backend.auth title="Login" description="Login to your account">
+<x-backend.auth title="Password Reset" description="Reset Your Password">
    <livewire:password-reset-widget />
 </x-backend.auth>

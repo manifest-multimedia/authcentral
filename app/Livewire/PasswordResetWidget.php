@@ -18,13 +18,14 @@ class PasswordResetWidget extends Component
 
     public function resetPassword()
     {
+
         $this->validate(
             [
                 'email' => 'required|email',
-                'password' => 'required|confirmed'
+                'password' => 'required'
             ]
         );
-
+        // dd('works');
         $user = User::where('email', $this->email)->first();
 
         if ($user) {

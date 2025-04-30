@@ -8,25 +8,110 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="{{ asset('css/bootstrap/bootstrap.min.css') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="shuffle-for-bootstrap.png">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        /* Custom scrollbar styling - vertical only */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 0; /* Remove horizontal scrollbar */
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Form container styles for vertical scrolling only */
+        .auth-form-container {
+            max-height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden; /* Hide horizontal scrollbar */
+            padding: 1rem 0;
+            width: 100%;
+        }
+        
+        /* Make sure content doesn't overflow horizontally */
+        form, .form-group, .row {
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-height: 800px) {
+            .auth-logo {
+                height: 100px !important;
+                margin-bottom: 0.5rem;
+            }
+            
+            .mb-7 {
+                margin-bottom: 1rem !important;
+            }
+        }
+        
+        /* Make the auth section responsive */
+        .auth-section {
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden; /* Prevent horizontal scrolling at the section level */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Ensure full height for both columns */
+        .auth-row {
+            flex: 1;
+            min-height: 100vh;
+            margin: 0;
+            width: 100%;
+        }
+        
+        .testimonial-side {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        /* Ensure form side takes full height */
+        .form-side {
+            min-height: 100vh;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
 </head>
 
 <body>
-
-    <section data-from-ai="true" class="overflow-hidden pt-20 bg-white vh-100 position-relative pt-md-0"
+    <section data-from-ai="true" class="auth-section bg-white position-relative"
         style="background-image: url('{{ asset('images/pattern-light.png') }}')">
         <div class="top-0 position-absolute start-0 h-100 w-100"
             style="background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%);"></div>
-        <div class="position-relative row align-items-center g-16 h-100" style="z-index:1;">
-            <div class="col-12 col-md-6">
+        <div class="position-relative row auth-row g-0" style="z-index:1;">
+            <div class="col-12 col-md-6 form-side">
                 <div class="px-4 mx-auto mb-7 text-center mw-md">
-                    {{-- <div class="mx-auto mb-6 d-flex align-items-center justify-content-center bg-primary rounded-3"
-                        style="width: 64px; height: 64px;"> </div> --}}
-                    <img class="img-fluid" style="height: 150px;" src="{{ asset('images/pnmtc-logo.png') }}"
+                    <img class="img-fluid auth-logo" style="height: 150px;" src="{{ asset('images/pnmtc-logo.png') }}"
                         alt="">
                     <h2 class="mb-4 font-heading fs-7">{{ $description }}</h2>
-                    {{-- <p class="mb-0 fs-9 fw-medium text-secondary">Start your demo version</p> --}}
-                    {{-- Output Errors --}}
-
+                    
                     @if ($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <ul>
@@ -36,41 +121,29 @@
                             </ul>
                         </div>
                     @endif
-
                 </div>
-                {{ $slot }}
-
+                <div class="auth-form-container">
+                    {{ $slot }}
+                </div>
             </div>
-            <div class="col-12 col-md-6 h-100">
-                <div
-                    class="px-4 py-36 bg-light-light h-100 d-flex flex-column align-items-center justify-content-center">
-                    <div class="mx-auto text-center mw-md-xl quotes"> <span
-                            class="mb-4 shadow badge bg-primary-dark text-primary text-uppercase">Testimonials</span>
-                        <div class="mb-20 position-relative">
-                            <h2 class="position-relative font-heading fs-7 fw-medium text-light-dark"
-                                style="z-index: 1;">Love the simplicity of the service and the prompt customer
-                                support. We can't imagine working without it.</h2> <img
-                                class="top-0 position-absolute start-0 ms-n12 mt-n10"
-                                src="flex-assets/images/sign-in/quote-top.svg" alt=""> <img
-                                class="bottom-0 position-absolute end-0 me-n10 mb-n16"
-                                src="flex-assets/images/sign-in/quote-down.svg" alt="">
-                        </div> <img class="mb-6 img-fluid" src="flex-assets/images/sign-in/avatar.png" alt="">
-                        <h3 class="mb-1 font-heading fs-10 fw-semibold text-light-dark">John Doe</h3>
-                        {{-- <p class="mb-8 fs-10 text-secondary-light">CEO &amp; Founder at Flex.co</p> --}}
-                        {{-- <div class="row justify-content-center g-3">
-                            <div class="col-auto prev"><a class="d-inline-block rounded-pill bg-light"
-                                    style="width: 12px; height: 12px;" href="#"></a></div>
-                            <div class="col-auto current"><a class="d-inline-block rounded-pill bg-primary"
-                                    style="width: 12px; height: 12px;" href="#"></a></div>
-                            <div class="col-auto next"><a class="d-inline-block rounded-pill bg-light"
-                                    style="width: 12px; height: 12px;" href="#"></a></div>
-                        </div> --}}
+            <div class="col-12 col-md-6 testimonial-side">
+                <div class="mx-auto text-center mw-md-xl quotes">
+                    <span class="mb-4 shadow badge bg-primary-dark text-primary text-uppercase">TESTIMONIALS</span>
+                    <div class="mb-20 position-relative">
+                        <h2 class="position-relative font-heading fs-7 fw-medium text-light-dark"
+                            style="z-index: 1;">Love the simplicity of the service and the prompt customer
+                            support. We can't imagine working without it.</h2>
+                        <img class="top-0 position-absolute start-0 ms-n12 mt-n10"
+                            src="flex-assets/images/sign-in/quote-top.svg" alt="">
+                        <img class="bottom-0 position-absolute end-0 me-n10 mb-n16"
+                            src="flex-assets/images/sign-in/quote-down.svg" alt="">
                     </div>
+                    <img class="mb-6 img-fluid" src="flex-assets/images/sign-in/avatar.png" alt="">
+                    <h3 class="mb-1 font-heading fs-10 fw-semibold text-light-dark">John Doe</h3>
                 </div>
             </div>
         </div>
     </section>
-
 
     <script>
         // Sample quotes data array
@@ -148,11 +221,6 @@
         updateQuote();
         autoSlideInterval = setInterval(autoSlide, slideTime);
     </script>
-
-
-
-
-
 
     <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
