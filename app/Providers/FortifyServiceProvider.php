@@ -41,6 +41,16 @@ class FortifyServiceProvider extends ServiceProvider
             return view('reset-password', ['request' => $request]);
         });
 
+        // Register the confirm password view
+        Fortify::confirmPasswordView(function () {
+            return view('confirm-password');
+        });
+
+        // Register the two factor authentication challenge view
+        Fortify::twoFactorChallengeView(function () {
+            return view('auth.two-factor-challenge');
+        });
+
         Fortify::authenticateUsing(function (Request $request) { // Use Illuminate\Http\Request here
             // Use TokenGuard to handle authentication
             $result = (new TokenGuard())->authenticate($request);

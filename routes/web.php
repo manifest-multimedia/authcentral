@@ -72,7 +72,7 @@ Route::middleware([
     })->name('account.activity');
 
     Route::get('/2fa', function () {
-        return view('coming-soon');
+        return view('backend.security.two-factor-auth');
     })->name('account.security');
 });
 
