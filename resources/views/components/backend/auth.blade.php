@@ -40,7 +40,6 @@
         .auth-form-container {
             width: 100%;
             padding: 1rem 0;
-            flex: 1;
         }
         
         /* Make sure content doesn't overflow horizontally */
@@ -89,10 +88,20 @@
             min-height: 100vh;
         }
         
+        /* Form side centered vertically, just like testimonials */
         .form-side {
             width: 50%;
             min-height: 100vh;
-            padding-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .form-content {
+            max-width: 90%;
+            width: 450px; /* Match the testimonial content width */
         }
         
         .testimonial-side {
@@ -119,6 +128,12 @@
             .testimonial-side {
                 background-color: #f8f9fa;
             }
+            
+            .form-content {
+                max-width: 100%;
+                width: 100%;
+                padding: 0 1rem;
+            }
         }
     </style>
 </head>
@@ -134,23 +149,25 @@
             
         <div class="content-wrapper">
             <div class="form-side">
-                <div class="px-4 mx-auto mb-7 text-center mw-md">
-                    <img class="img-fluid auth-logo" style="height: 150px;" src="{{ asset('images/pnmtc-logo.png') }}"
-                        alt="">
-                    <h2 class="mb-4 font-heading fs-7">{{ $description }}</h2>
-                    
-                    @if ($errors->any())
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                </div>
-                <div class="auth-form-container">
-                    {{ $slot }}
+                <div class="form-content">
+                    <div class="text-center">
+                        <img class="img-fluid auth-logo" style="height: 150px;" src="{{ asset('images/pnmtc-logo.png') }}"
+                            alt="">
+                        <h2 class="mb-4 font-heading fs-7">{{ $description }}</h2>
+                        
+                        @if ($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="auth-form-container">
+                        {{ $slot }}
+                    </div>
                 </div>
             </div>
             
