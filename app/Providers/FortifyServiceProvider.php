@@ -31,6 +31,16 @@ class FortifyServiceProvider extends ServiceProvider
             return view('login');
         });
 
+        // Register the forgot password view
+        Fortify::requestPasswordResetLinkView(function () {
+            return view('forgot-password');
+        });
+        
+        // Register the reset password view
+        Fortify::resetPasswordView(function ($request) {
+            return view('reset-password', ['request' => $request]);
+        });
+
         Fortify::authenticateUsing(function (Request $request) { // Use Illuminate\Http\Request here
             // Use TokenGuard to handle authentication
             $result = (new TokenGuard())->authenticate($request);
