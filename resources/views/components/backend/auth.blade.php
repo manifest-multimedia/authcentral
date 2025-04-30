@@ -14,6 +14,7 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            overflow-y: auto; /* Allow vertical scrolling */
         }
         
         /* Custom scrollbar styling - vertical only */
@@ -35,13 +36,11 @@
             background: #555;
         }
         
-        /* Form container styles for vertical scrolling only */
+        /* Form container styles */
         .auth-form-container {
-            max-height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden; /* Hide horizontal scrollbar */
-            padding: 1rem 0;
             width: 100%;
+            padding: 1rem 0;
+            flex: 1;
         }
         
         /* Make sure content doesn't overflow horizontally */
@@ -62,27 +61,43 @@
             }
         }
         
-        /* Make the auth section responsive */
-        .auth-section {
+        /* Main page container */
+        .main-wrapper {
+            position: relative;
             min-height: 100vh;
             width: 100%;
-            overflow-x: hidden; /* Prevent horizontal scrolling at the section level */
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
         }
         
-        /* Ensure full height for both columns */
-        .auth-row {
-            flex: 1;
+        /* Testimonial side - full height background */
+        .testimonial-bg {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background-color: #f8f9fa;
+            z-index: 0;
+        }
+        
+        /* Content layout */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
             min-height: 100vh;
-            margin: 0;
-            width: 100%;
+        }
+        
+        .form-side {
+            width: 50%;
+            min-height: 100vh;
+            padding-bottom: 2rem;
         }
         
         .testimonial-side {
-            background-color: #f8f9fa;
+            width: 50%;
             min-height: 100vh;
-            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -90,23 +105,35 @@
             padding: 2rem;
         }
         
-        /* Ensure form side takes full height */
-        .form-side {
-            min-height: 100vh;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
+        /* Mobile responsive styles */
+        @media (max-width: 767.98px) {
+            .testimonial-bg {
+                display: none; /* Hide fixed background on mobile */
+            }
+            
+            .form-side,
+            .testimonial-side {
+                width: 100%;
+            }
+            
+            .testimonial-side {
+                background-color: #f8f9fa;
+            }
         }
     </style>
 </head>
 
 <body>
-    <section data-from-ai="true" class="auth-section bg-white position-relative"
-        style="background-image: url('{{ asset('images/pattern-light.png') }}')">
+    <div class="main-wrapper" style="background-image: url('{{ asset('images/pattern-light.png') }}')">
+        <!-- Fixed background for testimonials side -->
+        <div class="testimonial-bg"></div>
+        
+        <!-- Gradient overlay -->
         <div class="top-0 position-absolute start-0 h-100 w-100"
-            style="background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%);"></div>
-        <div class="position-relative row auth-row g-0" style="z-index:1;">
-            <div class="col-12 col-md-6 form-side">
+            style="background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%); z-index: 0;"></div>
+            
+        <div class="content-wrapper">
+            <div class="form-side">
                 <div class="px-4 mx-auto mb-7 text-center mw-md">
                     <img class="img-fluid auth-logo" style="height: 150px;" src="{{ asset('images/pnmtc-logo.png') }}"
                         alt="">
@@ -126,7 +153,8 @@
                     {{ $slot }}
                 </div>
             </div>
-            <div class="col-12 col-md-6 testimonial-side">
+            
+            <div class="testimonial-side">
                 <div class="mx-auto text-center mw-md-xl quotes">
                     <span class="mb-4 shadow badge bg-primary-dark text-primary text-uppercase">TESTIMONIALS</span>
                     <div class="mb-20 position-relative">
@@ -143,7 +171,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <script>
         // Sample quotes data array
