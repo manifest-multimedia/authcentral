@@ -1390,7 +1390,7 @@
 											<!--end::Menu item-->
 											<!--begin::Menu item-->
 											<div class="px-5 my-1 menu-item">
-												<a href="account/settings.html" class="px-5 menu-link">Account Settings</a>
+												<a href="{{ url('profile') }}" class="px-5 menu-link">Account Settings</a>
 											</div>
 											<!--end::Menu item-->
 											<!--begin::Menu item-->
