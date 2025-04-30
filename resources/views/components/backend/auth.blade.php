@@ -156,15 +156,7 @@
                             alt="">
                         <h2 class="mb-4 font-heading fs-7">{{ $description }}</h2>
                         
-                        @if ($errors->any())
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                        <!-- Error messages moved to individual pages -->
                     </div>
                     <div class="auth-form-container">
                         {{ $slot }}
@@ -191,7 +183,18 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>
+        // Initialize Bootstrap components including alert dismissal
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enable all dismissible alerts
+            var alertList = document.querySelectorAll('.alert-dismissible');
+            alertList.forEach(function(alert) {
+                new bootstrap.Alert(alert);
+            });
+        });
+        
         // Sample quotes data array
         const quoteData = [{
                 text: "I have worked with Manifest Digital for 2+ years and I like how they work with speed. Their works are neat with beautiful interfaces. Thanks for making Yve Digital & Get The Artiste platforms what they are.",
@@ -268,7 +271,6 @@
         autoSlideInterval = setInterval(autoSlide, slideTime);
     </script>
 
-    <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 

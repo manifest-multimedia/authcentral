@@ -2,6 +2,32 @@
     <form class="px-4 mx-auto mw-sm pb-4" method="POST" action="{{ route('register') }}">
         @csrf <!-- CSRF Token -->
 
+        <div class="mb-4">
+            @if (session('status'))
+                <div class="mb-4 alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <span>{{ session('status') }}</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            
+            @if ($errors->any())
+                <div class="mb-4 alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>
+                        <span>
+                            @foreach ($errors->all() as $error)
+                                {{ $error }}<br>
+                            @endforeach
+                        </span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+        </div>
+
         <div class="mb-3 row g-3">
             <div class="col-12">
                 <div class="form-group">

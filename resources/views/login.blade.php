@@ -2,16 +2,41 @@
     <form class="px-4 mx-auto mw-sm" method="POST" action="{{ route('login') }}">
         @csrf <!-- CSRF Token -->
 
-
         <input type="hidden" name="redirect_uri" value="{{ request()->get('redirect_uri') }}">
         <input type="hidden" name="redirect_url" value="{{ request()->get('redirect_url') }}">
+
+        <div class="mb-4">
+            @if (session('status'))
+                <div class="mb-4 alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <span>{{ session('status') }}</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            
+            @if ($errors->any())
+                <div class="mb-4 alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>
+                        <span>
+                            @foreach ($errors->all() as $error)
+                                {{ $error }}<br>
+                            @endforeach
+                        </span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+        </div>
 
         <div class="mb-4 row g-6">
             <div class="col-12">
                 <div class="form-group">
                     <label class="mb-1 fw-medium text-light-dark" for="email">Email</label>
                     <input class="shadow form-control text-secondary-dark" id="email" type="email" name="email"
-                        required autofocus aria-describedby="emailHelp" placeholder="youremail@pnmtc.edu.gh">
+                        value="{{ old('email') }}" required autofocus aria-describedby="emailHelp" placeholder="youremail@pnmtc.edu.gh">
                 </div>
             </div>
             <div class="col-12">
