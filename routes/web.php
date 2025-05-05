@@ -16,10 +16,6 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/users', function () {
-    return view('backend.users');
-})->name('user.management');
-
 
 Route::get('/login', function (Request $request) {
     $redirectUrl = $request->input('redirect_url') ?? $request->input('redirect_uri');
