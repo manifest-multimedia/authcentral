@@ -79,7 +79,7 @@ Route::middleware([
     })->name('account.security');
 
     // User Management Routes - Only accessible by specific roles
-    Route::middleware(['role:System|Super Admin|Administrator|Student'])->group(function () {
+    Route::middleware(['role:System|Super Admin|Administrator'])->group(function () {
         // User Management
         Route::resource('users', UserController::class);
         
