@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -19,6 +20,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -50,6 +52,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'role_names',
     ];
 
     /**
@@ -63,5 +66,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    
+    /**
+     * Get role names for the user.
+     *
+     * @return array
+     */
+    public function getRoleNamesAttribute()
+    {
+        return $this->roles->pluck('name')->toArray();
+    }
+    
+    /**
+     * Check if the user has System level access.
+     *
+     * @return bool
+     */
+    public function isSystem(): bool
+    {
+        return $this->hasRole('System');
+    }
+    
+    /**
+     * Check if the user has Super Admin level access.
+     *
+     * @return bool
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('Super Admin');
+    }
+    
+    /**
+     * Check if the user has Administrator level access.
+     *
+     * @return bool
+     */
+    public function isAdministrator(): bool
+    {
+        return $this->hasRole('Administrator');
     }
 }

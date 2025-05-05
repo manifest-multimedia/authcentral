@@ -23,6 +23,20 @@
                                 <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updatePhotoModal">
                                     {{ __('Update Photo') }}
                                 </button>
+                                
+                                <!-- User Roles Section -->
+                                <div class="mt-3">
+                                    <h6 class="fw-bold">{{ __('Your Roles') }}</h6>
+                                    @if(auth()->user()->roles->count() > 0)
+                                        <div class="mt-2">
+                                            @foreach(auth()->user()->roles as $role)
+                                                <span class="badge bg-info text-dark mb-1">{{ $role->name }}</span>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <span class="text-muted">{{ __('No roles assigned') }}</span>
+                                    @endif
+                                </div>
                             </div>
                             <div class="col-md-9">
                                 <!-- Update Profile Form -->
@@ -58,6 +72,21 @@
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
+                                    </div>
+
+                                    <!-- User Role Display (Read-only) -->
+                                    <div class="mb-3">
+                                        <label class="form-label">{{ __('Role') }}</label>
+                                        <div class="form-control bg-light">
+                                            @if(auth()->user()->roles->count() > 0)
+                                                @foreach(auth()->user()->roles as $role)
+                                                    <span class="badge bg-info text-dark me-1">{{ $role->name }}</span>
+                                                @endforeach
+                                            @else
+                                                <span class="text-muted">{{ __('No roles assigned') }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="form-text text-muted">{{ __('Roles define your access permissions in the system') }}</div>
                                     </div>
 
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">

@@ -17,7 +17,11 @@ use App\Http\Controllers\ActivityLogController;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    $user = $request->user();
+    return [
+        'user' => $user,
+        'roles' => $user->roles->pluck('name')
+    ];
 });
 
 // Activity log API endpoint

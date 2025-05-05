@@ -81,6 +81,25 @@
                 @endif
             @endif
         </div>
+
+        <!-- User Roles (Read-only) -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="roles" value="{{ __('Roles') }}" />
+            <div class="mt-1 bg-gray-100 rounded-md border border-gray-300 px-3 py-2">
+                @if(Auth::user()->roles->count() > 0)
+                    @foreach(Auth::user()->roles as $role)
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800 mr-2 mb-2">
+                            {{ $role->name }}
+                        </span>
+                    @endforeach
+                @else
+                    <span class="text-gray-500 text-sm">{{ __('No roles assigned') }}</span>
+                @endif
+            </div>
+            <p class="mt-1 text-sm text-gray-500">
+                {{ __('Your roles determine what actions you can perform in the system.') }}
+            </p>
+        </div>
     </x-slot>
 
     <x-slot name="actions">

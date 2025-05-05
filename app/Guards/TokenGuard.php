@@ -30,10 +30,17 @@ class TokenGuard
             $user = Auth::guard('web')->user();
             $token = $user->createToken('auth-token')->plainTextToken;
 
+            // Load user roles
+            $roles = $user->roles->pluck('name');
+
             // Clear the rate limiter after a successful login
             RateLimiter::clear($throttleKey);
 
-            return ['user' => $user, 'token' => $token];
+            return [
+                'user' => $user, 
+                'token' => $token,
+                'roles' => $roles
+            ];
         }
 
         // Hit the rate limiter after a failed login attempt

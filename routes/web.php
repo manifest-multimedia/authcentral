@@ -68,7 +68,7 @@ Route::middleware([
     Route::get('/profile', function () {
         return view('backend.profile.index');
     })->name('account.profile');
-    
+
     // Profile photo update route
     Route::put('/user/profile-photo', [ProfilePhotoController::class, 'update'])->name('user-profile-photo.update');
 
