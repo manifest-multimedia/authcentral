@@ -7,17 +7,35 @@
         <div class="col-xl-4">
             <!--begin::Misc Widget 1-->
             <div class="mb-5 row mb-xl-8 g-5 g-xl-8">
+                                @hasrole(['System', 'Super Admin'])
+                                    <!--begin::Col-->
+                                    <div class="col-6">
+                                        <!--begin::Card-->
+                                        <a class="p-10 text-gray-800 card flex-column justfiy-content-start align-items-start text-start w-100 text-hover-primary" href="{{ url('users') }}">
+                                            <i class="mb-5 text-gray-500 ki-duotone ki-people fs-2tx ms-n1">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                                <span class="path4"></span>
+                                            </i>
+                                            <span class="fs-4 fw-bold">Users</span>
+                                        </a>
+                                        <!--end::Card-->
+                                    </div>
+                                    <!--end::Col-->
+                                @endhasrole
+
                 <!--begin::Col-->
                 <div class="col-6">
                     <!--begin::Card-->
                     <a class="p-10 text-gray-800 card flex-column justfiy-content-start align-items-start text-start w-100 text-hover-primary" href="{{ route('account.profile') }}">
-                        <i class="mb-5 text-gray-500 ki-duotone ki-gift fs-2tx ms-n1">
+                        <i class="mb-5 text-gray-500 ki-duotone ki-user fs-2tx ms-n1">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                             <span class="path4"></span>
                         </i>
-                        <span class="fs-4 fw-bold">User Profile</span>
+                        <span class="fs-4 fw-bold">Profile</span>
                     </a>
                     <!--end::Card-->
                 </div>

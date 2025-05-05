@@ -9,8 +9,10 @@
 
         <div class="card mb-4">
             <div class="card-header">
+                <div class="card-title">
                 <i class="fas fa-user-plus me-1"></i>
                 User Information
+                </div>
             </div>
             <div class="card-body">
                 <form action="{{ route('users.store') }}" method="POST">

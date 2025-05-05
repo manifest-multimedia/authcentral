@@ -9,8 +9,10 @@
 
         <div class="card mb-4">
             <div class="card-header">
+                <div class="card-title">
                 <i class="fas fa-user-edit me-1"></i>
                 Edit User Information
+                </div>
             </div>
             <div class="card-body">
                 <form action="{{ route('users.update', $user->id) }}" method="POST">

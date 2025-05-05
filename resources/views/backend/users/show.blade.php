@@ -11,8 +11,10 @@
             <div class="col-xl-4">
                 <div class="card mb-4">
                     <div class="card-header">
+                        <div class="card-title">
                         <i class="fas fa-user me-1"></i>
                         User Information
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="text-center mb-4">
@@ -44,8 +46,10 @@
             <div class="col-xl-8">
                 <div class="card mb-4">
                     <div class="card-header">
+                        <div class="card-title">
                         <i class="fas fa-user-tag me-1"></i>
                         Roles & Permissions
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="mb-4">
@@ -80,8 +84,9 @@
                 
                 <div class="card">
                     <div class="card-header">
+                        <div class="card-title">
                         <i class="fas fa-cogs me-1"></i>
-                        Actions
+                        Actions</div>
                     </div>
                     <div class="card-body">
                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">

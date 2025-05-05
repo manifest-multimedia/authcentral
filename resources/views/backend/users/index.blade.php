@@ -23,8 +23,10 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
+                    <div class="card-title">
                     <i class="fas fa-users me-1"></i>
                     Users
+                    </div>
                 </div>
                 <a href="{{ route('users.create') }}" class="btn btn-primary">Add New User</a>
             </div>
