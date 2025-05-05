@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -78,7 +81,20 @@ Route::middleware([
     Route::get('/2fa', function () {
         return view('backend.security.two-factor-auth');
     })->name('account.security');
-});
 
+    // User Management Routes - Only accessible by specific roles
+    Route::middleware(['role:System|Super Admin|Administrator|Student'])->group(function () {
+        // User Management
+        Route::resource('users', UserController::class);
+        
+        // Role Management
+        Route::resource('roles', RoleController::class);
+        
+        // Permission Management (restricted to System and Super Admin only)
+        Route::middleware(['role:System|Super Admin'])->group(function () {
+            Route::resource('permissions', PermissionController::class);
+        });
+    });
+});
 
 include_once __DIR__ . '/fortify.php';

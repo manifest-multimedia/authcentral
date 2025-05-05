@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 class AssignDefaultRoleOnLogin
 {
@@ -36,7 +37,7 @@ class AssignDefaultRoleOnLogin
             $user->assignRole($staffRole);
             
             // Log that a default role was assigned (optional)
-            \Log::info("Default 'Staff' role assigned to user {$user->id} ({$user->email}) on login.");
+            Log::info("Default 'Staff' role assigned to user {$user->id} ({$user->email}) on login.");
         }
     }
 }
