@@ -70,5 +70,15 @@
             <span>Don't have an account?</span>
             <a class="text-primary link-primary" href="{{ route('sign-up') }}">Sign up</a>
         </p>
+
+        <div class="mt-4 text-center">
+            <hr class="my-3">
+            <p class="mb-2 text-center fs-13 fw-medium text-light-dark">
+                <span>Are you a student?</span>
+            </p>
+            <a class="btn btn-outline-primary btn-sm" href="{{ route('student.register') }}">
+                Register as Student
+            </a>
+        </div>
     </form>
 </x-backend.auth>

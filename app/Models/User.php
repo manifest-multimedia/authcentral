@@ -31,6 +31,18 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'student_id',
+        'phone',
+        'date_of_birth',
+        'gender',
+        'address',
+        'guardian_name',
+        'guardian_phone',
+        'course',
+        'level',
+        'department',
+        'enrollment_date',
+        'status',
     ];
 
     /**
@@ -65,6 +77,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'date_of_birth' => 'date',
+            'enrollment_date' => 'date',
         ];
     }
     
@@ -106,5 +120,15 @@ class User extends Authenticatable
     public function isAdministrator(): bool
     {
         return $this->hasRole('Administrator');
+    }
+    
+    /**
+     * Check if the user is a Student.
+     *
+     * @return bool
+     */
+    public function isStudent(): bool
+    {
+        return $this->hasRole('Student');
     }
 }

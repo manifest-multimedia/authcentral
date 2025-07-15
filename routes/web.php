@@ -8,6 +8,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\StudentRegistrationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -45,6 +46,10 @@ Route::get('account-reset', function () {
     return view('resetpass');
 });
 
+// Student Registration Routes
+Route::get('/student/register', [StudentRegistrationController::class, 'create'])->name('student.register');
+Route::post('/student/register', [StudentRegistrationController::class, 'store'])->name('student.register.store');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -53,6 +58,12 @@ Route::middleware([
 
 ])->group(function () {
     Route::get('/portal', function () {
+        // Redirect students to the college portal with token
+        if (Auth::user()->isStudent()) {
+            $token = Auth::user()->createToken('student-portal-token')->plainTextToken;
+            return redirect()->away('https://college.pnmtc.edu.gh/auth/callback?token=' . $token);
+        }
+        
         return view('backend.dashboard');
     })->name('dashboard');
 
