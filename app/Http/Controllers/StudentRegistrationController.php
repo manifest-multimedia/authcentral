@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Log;
 
 class StudentRegistrationController extends Controller
 {
@@ -41,11 +42,11 @@ class StudentRegistrationController extends Controller
         // Generate unique student ID
         $studentId = $this->generateStudentId();
 
-        // Create the user
+        // Create the user (password will be auto-synced to CIS via model events)
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password, // Don't hash here - let the model handle it and sync
             'student_id' => $studentId,
             'phone' => $request->phone,
             'date_of_birth' => $request->date_of_birth,

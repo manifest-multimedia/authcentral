@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use App\Http\Controllers\PasswordSyncWebhookController;
 
 class User extends Authenticatable
 {
@@ -130,5 +131,61 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->hasRole('Student');
+    }
+
+    /**
+     * Store the plain text password temporarily for CIS sync.
+     *
+     * @var string|null
+     */
+    private $plainTextPassword = null;
+
+    /**
+     * Set the password attribute and store plain text for sync.
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setPasswordAttribute($value)
+    {
+        // Store plain text password for CIS sync before hashing
+        if (!empty($value) && !str_starts_with($value, '$2y$')) {
+            $this->plainTextPassword = $value;
+        }
+        
+        // Let Laravel handle the hashing via the cast
+        $this->attributes['password'] = $value;
+    }
+
+    /**
+     * Boot method to set up model event listeners.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Sync password to CIS when user is created
+        static::created(function ($user) {
+            if ($user->plainTextPassword) {
+                PasswordSyncWebhookController::syncUserPassword(
+                    $user->email,
+                    $user->plainTextPassword,
+                    'user_registered'
+                );
+            }
+        });
+
+        // Sync password to CIS when user password is updated
+        static::updated(function ($user) {
+            if ($user->plainTextPassword && $user->wasChanged('password')) {
+                PasswordSyncWebhookController::syncUserPassword(
+                    $user->email,
+                    $user->plainTextPassword,
+                    'password_changed'
+                );
+            }
+        });
     }
 }

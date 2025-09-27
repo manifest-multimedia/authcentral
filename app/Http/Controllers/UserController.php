@@ -43,7 +43,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password, // Let model handle hashing and CIS sync
         ]);
 
         // Get the actual role objects using the provided IDs
@@ -99,7 +99,7 @@ class UserController extends Controller
             ]);
             
             $user->update([
-                'password' => Hash::make($request->password),
+                'password' => $request->password, // Let model handle hashing and CIS sync
             ]);
         }
 
