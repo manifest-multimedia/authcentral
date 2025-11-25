@@ -6,15 +6,30 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
+use Spatie\Permission\Models\Role;
 
 class UserManagement extends Component
 {
-    public $users;
+    use WithPagination;
+
     public $editUserId = null; // Track the user being edited
     public $name, $email, $role;
     public $roles = ['User', 'Admin', 'Super Admin', 'Manager', 'Tutor', 'Student', 'Parent', 'Alumni']; // Updated roles
     public $successMessage, $errorMessage;
     public $originalEmail;
+
+    // Search and filter properties
+    public $search = '';
+    public $roleFilter = '';
+    public $perPage = 15;
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'roleFilter' => ['except' => ''],
+    ];
+
+    protected $paginationTheme = 'bootstrap';
 
     protected function rules()
     {
@@ -35,12 +50,60 @@ class UserManagement extends Component
 
     public function mount()
     {
-        $this->fetchUsers();
+        // Initialize roles from database
+        $this->loadAvailableRoles();
     }
 
-    public function fetchUsers()
+    public function loadAvailableRoles()
     {
-        $this->users = User::all();
+        // Get all roles from Spatie Permission
+        $spatieRoles = Role::all()->pluck('name')->toArray();
+        
+        // Merge with hardcoded roles if needed
+        $this->roles = !empty($spatieRoles) 
+            ? $spatieRoles 
+            : ['User', 'Admin', 'Super Admin', 'Manager', 'Tutor', 'Student', 'Parent', 'Alumni'];
+    }
+
+    public function getUsers()
+    {
+        $query = User::query();
+
+        // Search by name or email
+        if ($this->search) {
+            $query->where(function($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhere('email', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        // Filter by role (checking both role column and Spatie roles)
+        if ($this->roleFilter) {
+            $query->where(function($q) {
+                $q->where('role', $this->roleFilter)
+                  ->orWhereHas('roles', function($roleQuery) {
+                      $roleQuery->where('name', $this->roleFilter);
+                  });
+            });
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate($this->perPage);
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingRoleFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function clearFilters()
+    {
+        $this->reset(['search', 'roleFilter']);
+        $this->resetPage();
     }
 
     public function edit($userId)
@@ -62,15 +125,18 @@ class UserManagement extends Component
             $user->name = $this->name;
             $user->email = $this->email;
             $user->role = $this->role;
+            
+            // Sync Spatie role if using Spatie Permission
+            if (method_exists($user, 'syncRoles')) {
+                $user->syncRoles([$this->role]);
+            }
+            
             $user->save(); // Save changes to the database
-
-            // Refresh the user list after saving
-            $this->fetchUsers();
 
             $this->successMessage = 'User updated successfully!';
             $this->editUserId = null; // Exit edit mode
         } catch (\Exception $e) {
-            $this->errorMessage = 'Failed to update user.';
+            $this->errorMessage = 'Failed to update user: ' . $e->getMessage();
         }
     }
 
@@ -88,10 +154,9 @@ class UserManagement extends Component
             DB::commit();
 
             $this->successMessage = 'User deleted successfully!';
-            $this->fetchUsers();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->errorMessage = 'Failed to delete user.';
+            $this->errorMessage = 'Failed to delete user: ' . $e->getMessage();
         }
     }
 
@@ -103,6 +168,8 @@ class UserManagement extends Component
 
     public function render()
     {
-        return view('livewire.user-management');
+        return view('livewire.user-management', [
+            'users' => $this->getUsers(),
+        ]);
     }
 }

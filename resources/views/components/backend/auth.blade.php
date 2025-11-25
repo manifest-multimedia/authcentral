@@ -152,7 +152,7 @@
             <div class="form-side">
                 <div class="form-content">
                     <div class="text-center">
-                        <img class="img-fluid auth-logo" style="height: 150px;" src="{{ asset('images/pnmtc-logo.png') }}"
+                        <img class="img-fluid auth-logo" style="height: 150px;" src="{{ asset('images/mhtia-white.png') }}"
                             alt="">
                         <h2 class="mb-4 font-heading fs-7">{{ $description }}</h2>
                         

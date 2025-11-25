@@ -26,3 +26,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Activity log API endpoint
 Route::post('/activity-log', [ActivityLogController::class, 'store']);
+
+/*
+|--------------------------------------------------------------------------
+| Roles & Permissions Registry API Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('registry/roles-permissions')->group(function () {
+    Route::post('/sync', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'handleWebhook']);
+    Route::get('/health', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'healthCheck']);
+    
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/{appIdentifier}', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'getRegistry']);
+        Route::post('/{appIdentifier}/reconcile', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'triggerReconciliation']);
+    });
+});
