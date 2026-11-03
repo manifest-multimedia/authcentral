@@ -16,11 +16,20 @@ class UserManagementTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create some roles
-        Role::create(['name' => 'Admin', 'guard_name' => 'web']);
-        Role::create(['name' => 'Student', 'guard_name' => 'web']);
-        Role::create(['name' => 'Manager', 'guard_name' => 'web']);
+        Role::findOrCreate('Admin', 'web');
+        Role::findOrCreate('Student', 'web');
+        Role::findOrCreate('Manager', 'web');
+    }
+
+    public function test_staff_role_can_be_saved_without_a_legacy_role_column(): void
+    {
+        $operator = User::factory()->create()->assignRole('System');
+        $target = User::factory()->create(['name' => 'Local Test Target']);
+        Livewire::actingAs($operator)->test(UserManagement::class)
+            ->call('edit', $target->id)->set('role', 'Staff')->call('save')->assertHasNoErrors();
+        $this->assertTrue($target->fresh()->hasRole('Staff'));
     }
 
     /** @test */
@@ -57,8 +66,8 @@ class UserManagementTest extends TestCase
     public function it_can_filter_users_by_role()
     {
         // Arrange
-        $admin = User::factory()->create(['name' => 'Admin User', 'role' => 'Admin']);
-        $student = User::factory()->create(['name' => 'Student User', 'role' => 'Student']);
+        $admin = User::factory()->create(['name' => 'Admin User'])->assignRole('Admin');
+        $student = User::factory()->create(['name' => 'Student User'])->assignRole('Student');
 
         // Act & Assert
         Livewire::test(UserManagement::class)
@@ -73,7 +82,7 @@ class UserManagementTest extends TestCase
         // Arrange
         $admin = User::factory()->create(['name' => 'Admin User']);
         $admin->assignRole('Admin');
-        
+
         $student = User::factory()->create(['name' => 'Student User']);
         $student->assignRole('Student');
 
@@ -88,9 +97,9 @@ class UserManagementTest extends TestCase
     public function it_can_combine_search_and_filter()
     {
         // Arrange
-        $adminJohn = User::factory()->create(['name' => 'John Admin', 'role' => 'Admin']);
-        $adminJane = User::factory()->create(['name' => 'Jane Admin', 'role' => 'Admin']);
-        $studentJohn = User::factory()->create(['name' => 'John Student', 'role' => 'Student']);
+        $adminJohn = User::factory()->create(['name' => 'John Admin'])->assignRole('Admin');
+        $adminJane = User::factory()->create(['name' => 'Jane Admin'])->assignRole('Admin');
+        $studentJohn = User::factory()->create(['name' => 'John Student'])->assignRole('Student');
 
         // Act & Assert
         Livewire::test(UserManagement::class)
@@ -105,8 +114,8 @@ class UserManagementTest extends TestCase
     public function it_can_clear_filters()
     {
         // Arrange
-        User::factory()->create(['name' => 'Admin User', 'role' => 'Admin']);
-        User::factory()->create(['name' => 'Student User', 'role' => 'Student']);
+        User::factory()->create(['name' => 'Admin User'])->assignRole('Admin');
+        User::factory()->create(['name' => 'Student User'])->assignRole('Student');
 
         // Act & Assert
         Livewire::test(UserManagement::class)
@@ -127,14 +136,14 @@ class UserManagementTest extends TestCase
 
         // Act & Assert
         $component = Livewire::test(UserManagement::class);
-        
+
         // Go to page 2
-        $component->set('page', 2);
-        
+        $component->set('paginators.page', 2);
+
         // Search should reset to page 1
         $component->set('search', 'test');
-        
-        $component->assertSet('page', 1);
+
+        $component->assertSet('paginators.page', 1);
     }
 
     /** @test */
@@ -173,7 +182,7 @@ class UserManagementTest extends TestCase
         Livewire::test(UserManagement::class)
             ->set('search', 'john')
             ->assertSee('John Doe');
-            
+
         Livewire::test(UserManagement::class)
             ->set('search', 'JOHN@example.com')
             ->assertSee('John Doe');
@@ -183,8 +192,8 @@ class UserManagementTest extends TestCase
     public function it_updates_user_count_based_on_filters()
     {
         // Arrange
-        User::factory()->count(5)->create(['role' => 'Admin']);
-        User::factory()->count(3)->create(['role' => 'Student']);
+        User::factory()->count(5)->create()->each(fn ($user) => $user->assignRole('Admin'));
+        User::factory()->count(3)->create()->each(fn ($user) => $user->assignRole('Student'));
 
         // Act & Assert
         Livewire::test(UserManagement::class)

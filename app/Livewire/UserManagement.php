@@ -14,14 +14,26 @@ class UserManagement extends Component
     use WithPagination;
 
     public $editUserId = null; // Track the user being edited
-    public $name, $email, $role;
+
+    public $name;
+
+    public $email;
+
+    public $role;
+
     public $roles = ['User', 'Admin', 'Super Admin', 'Manager', 'Tutor', 'Student', 'Parent', 'Alumni']; // Updated roles
-    public $successMessage, $errorMessage;
+
+    public $successMessage;
+
+    public $errorMessage;
+
     public $originalEmail;
 
     // Search and filter properties
     public $search = '';
+
     public $roleFilter = '';
+
     public $perPage = 15;
 
     protected $queryString = [
@@ -35,7 +47,7 @@ class UserManagement extends Component
     {
         $rules = [
             'name' => 'required|string|min:3',
-            'role' => 'required|in:User,Admin,Super Admin,Manager,Tutor,Student,Parent,Alumni',
+            'role' => ['required', \Illuminate\Validation\Rule::exists('roles', 'name')->where('guard_name', 'web')],
         ];
 
         // Only validate email uniqueness if it has changed
@@ -58,10 +70,10 @@ class UserManagement extends Component
     {
         // Get all roles from Spatie Permission
         $spatieRoles = Role::all()->pluck('name')->toArray();
-        
+
         // Merge with hardcoded roles if needed
-        $this->roles = !empty($spatieRoles) 
-            ? $spatieRoles 
+        $this->roles = ! empty($spatieRoles)
+            ? $spatieRoles
             : ['User', 'Admin', 'Super Admin', 'Manager', 'Tutor', 'Student', 'Parent', 'Alumni'];
     }
 
@@ -71,20 +83,14 @@ class UserManagement extends Component
 
         // Search by name or email
         if ($this->search) {
-            $query->where(function($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('email', 'like', '%' . $this->search . '%');
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%');
             });
         }
 
-        // Filter by role (checking both role column and Spatie roles)
         if ($this->roleFilter) {
-            $query->where(function($q) {
-                $q->where('role', $this->roleFilter)
-                  ->orWhereHas('roles', function($roleQuery) {
-                      $roleQuery->where('name', $this->roleFilter);
-                  });
-            });
+            $query->whereHas('roles', fn ($roles) => $roles->where('name', $this->roleFilter));
         }
 
         return $query->orderBy('created_at', 'desc')->paginate($this->perPage);
@@ -112,7 +118,7 @@ class UserManagement extends Component
         $user = User::findOrFail($userId);
         $this->name = $user->name;
         $this->email = $user->email;
-        $this->role = $user->role;
+        $this->role = $user->getRoleNames()->first();
         $this->originalEmail = $user->email; // Save the original email for validation
     }
 
@@ -124,19 +130,16 @@ class UserManagement extends Component
             $user = User::findOrFail($this->editUserId);
             $user->name = $this->name;
             $user->email = $this->email;
-            $user->role = $this->role;
-            
-            // Sync Spatie role if using Spatie Permission
-            if (method_exists($user, 'syncRoles')) {
+
+            DB::transaction(function () use ($user) {
+                $user->save();
                 $user->syncRoles([$this->role]);
-            }
-            
-            $user->save(); // Save changes to the database
+            });
 
             $this->successMessage = 'User updated successfully!';
             $this->editUserId = null; // Exit edit mode
         } catch (\Exception $e) {
-            $this->errorMessage = 'Failed to update user: ' . $e->getMessage();
+            $this->errorMessage = 'Failed to update user: '.$e->getMessage();
         }
     }
 
@@ -145,6 +148,7 @@ class UserManagement extends Component
         // Prevent the logged-in user from deleting their own account
         if ($userId === Auth::id()) {
             $this->errorMessage = 'You cannot delete your own account.';
+
             return;
         }
 
@@ -156,7 +160,7 @@ class UserManagement extends Component
             $this->successMessage = 'User deleted successfully!';
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->errorMessage = 'Failed to delete user: ' . $e->getMessage();
+            $this->errorMessage = 'Failed to delete user: '.$e->getMessage();
         }
     }
 

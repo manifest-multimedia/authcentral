@@ -2,50 +2,21 @@
 
 namespace App\Guards;
 
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
-use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\Hash;
 
 class TokenGuard
 {
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): ?array
     {
-
-        // Get the credentials from the request
-        $credentials = $request->only(['email', 'password']);
-
-        // Throttle logic based on the username and the IP address
-        $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
-
-        // Check if too many attempts
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
-            return response()->json(['error' => 'Too many login attempts. Try again in ' . $seconds . ' seconds'], 429);
+        $user = User::where('email', $request->input('email'))->first();
+        // Fortify owns session creation, throttling and the 2FA challenge.
+        // Checking credentials must not log in the user before that pipeline finishes.
+        if (! $user || $user->status !== 'active' || ! Hash::check((string) $request->input('password'), $user->password)) {
+            return null;
         }
 
-        // Attempt to authenticate using the "web" guard
-        if (Auth::guard('web')->attempt($credentials)) {
-            $user = Auth::guard('web')->user();
-            $token = $user->createToken('auth-token')->plainTextToken;
-
-            // Load user roles
-            $roles = $user->roles->pluck('name');
-
-            // Clear the rate limiter after a successful login
-            RateLimiter::clear($throttleKey);
-
-            return [
-                'user' => $user, 
-                'token' => $token,
-                'roles' => $roles
-            ];
-        }
-
-        // Hit the rate limiter after a failed login attempt
-        RateLimiter::hit($throttleKey);
-
-        return null;
+        return ['user' => $user];
     }
 }

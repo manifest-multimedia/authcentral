@@ -114,8 +114,8 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                @if($user->role)
-                                    <span class="badge badge-primary">{{ ucfirst($user->role) }}</span>
+                                @if($user->roles->isNotEmpty())
+                                    <span class="badge badge-primary">{{ $user->getRoleNames()->join(', ') }}</span>
                                 @endif
                                 @if(method_exists($user, 'getRoleNames') && $user->getRoleNames()->isNotEmpty())
                                     @foreach($user->getRoleNames() as $roleName)

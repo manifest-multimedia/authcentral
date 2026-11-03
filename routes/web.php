@@ -1,42 +1,33 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentRegistrationController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect(route('dashboard'));
     }
+
     return redirect('/login');
 });
 
-
 Route::get('/login', function (Request $request) {
-    $redirectUrl = $request->input('redirect_url') ?? $request->input('redirect_uri');
+    $redirectUrl = app(\App\Services\SsoRedirect::class)->validate($request->input('redirect_url') ?? $request->input('redirect_uri'));
     if (Auth::check()) {
-        $user = Auth::user();
-        // Generate a token for the user
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-
-        if ($redirectUrl) {
-            // Append the token to the redirect URL as a query parameter
-            return redirect()->away($redirectUrl . '?token=' . $token);
-        }
-        return redirect(route('dashboard'));
+        return app(\App\Services\SsoRedirect::class)->redirect(Auth::user(), $redirectUrl);
     }
+
     return view('login');
 })->name('login');
 
-
-
+Route::get('/register', fn () => view('register'))->name('register');
 
 Route::get('/sign-up', function () {
     return view('register');
@@ -55,24 +46,18 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 
-
 ])->group(function () {
     Route::get('/portal', function () {
         // Redirect students to the college portal with token
         if (Auth::user()->isStudent()) {
-            $token = Auth::user()->createToken('student-portal-token')->plainTextToken;
-            return redirect()->away('https://college.pnmtc.edu.gh/auth/callback?token=' . $token);
+            return app(\App\Services\SsoRedirect::class)->redirect(Auth::user(), config('sso.college_callback'));
         }
-        
+
         return view('backend.dashboard');
     })->name('dashboard');
 
     Route::get('/college-portal', function () {
-        $user = Auth::user();
-        // Generate a token for the user
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        return redirect()->away('https://college.pnmtc.edu.gh/auth/callback?token=' . $token);
+        return app(\App\Services\SsoRedirect::class)->redirect(Auth::user(), config('sso.college_callback'));
     })->name('college.portal');
 
     Route::get('/profile', function () {
@@ -93,10 +78,10 @@ Route::middleware([
     Route::middleware(['role:System|Super Admin|Administrator'])->group(function () {
         // User Management
         Route::resource('users', UserController::class);
-        
+
         // Role Management
         Route::resource('roles', RoleController::class);
-        
+
         // Permission Management (restricted to System and Super Admin only)
         Route::middleware(['role:System|Super Admin'])->group(function () {
             Route::resource('permissions', PermissionController::class);
@@ -104,4 +89,4 @@ Route::middleware([
     });
 });
 
-include_once __DIR__ . '/fortify.php';
+require __DIR__.'/fortify.php';

@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +17,10 @@ use App\Http\Controllers\ActivityLogController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     $user = $request->user();
+
     return [
         'user' => $user,
-        'roles' => $user->roles->pluck('name')
+        'roles' => $user->roles->pluck('name'),
     ];
 });
 
@@ -36,9 +36,11 @@ Route::post('/activity-log', [ActivityLogController::class, 'store']);
 Route::prefix('registry/roles-permissions')->group(function () {
     Route::post('/sync', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'handleWebhook']);
     Route::get('/health', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'healthCheck']);
-    
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{appIdentifier}', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'getRegistry']);
         Route::post('/{appIdentifier}/reconcile', [\App\Http\Controllers\Api\RolesPermissionsRegistryController::class, 'triggerReconciliation']);
     });
 });
+
+Route::post('/v1/college/verify-credentials', \App\Http\Controllers\Api\CollegeCredentialController::class)->middleware('throttle:60,1');

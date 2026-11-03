@@ -1,3 +1,9 @@
+# Local AuthCentral development
+
+Installed under `/home/johnsonsebire/www/authcentral` with PHP 8.4, MySQL and built Vite assets. Open https://authcentral.localhost/ . Use `devctl start authcentral`, `devctl logs authcentral`, and `devctl artisan authcentral ...` for the configured runtime.
+
+Local test accounts and private service credentials are stored outside the repository in the Codex workspace outputs/authcentral/private directory. Production PNMTC accounts are not copied into this database. College360 selects AuthCentral explicitly for PNMTC; regular-auth institutions remain independent. See the workspace outputs/authcentral/SETUP.md for integration, validation and limitations.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

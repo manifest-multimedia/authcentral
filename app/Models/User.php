@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Controllers\PasswordSyncWebhookController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +11,6 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use App\Http\Controllers\PasswordSyncWebhookController;
 
 class User extends Authenticatable
 {
@@ -18,10 +18,11 @@ class User extends Authenticatable
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+
     use HasProfilePhoto;
+    use HasRoles;
     use Notifiable;
     use TwoFactorAuthenticatable;
-    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -82,7 +83,7 @@ class User extends Authenticatable
             'enrollment_date' => 'date',
         ];
     }
-    
+
     /**
      * Get role names for the user.
      *
@@ -92,41 +93,33 @@ class User extends Authenticatable
     {
         return $this->roles->pluck('name')->toArray();
     }
-    
+
     /**
      * Check if the user has System level access.
-     *
-     * @return bool
      */
     public function isSystem(): bool
     {
         return $this->hasRole('System');
     }
-    
+
     /**
      * Check if the user has Super Admin level access.
-     *
-     * @return bool
      */
     public function isSuperAdmin(): bool
     {
         return $this->hasRole('Super Admin');
     }
-    
+
     /**
      * Check if the user has Administrator level access.
-     *
-     * @return bool
      */
     public function isAdministrator(): bool
     {
         return $this->hasRole('Administrator');
     }
-    
+
     /**
      * Check if the user is a Student.
-     *
-     * @return bool
      */
     public function isStudent(): bool
     {
@@ -143,18 +136,14 @@ class User extends Authenticatable
     /**
      * Set the password attribute and store plain text for sync.
      *
-     * @param string $value
+     * @param  string  $value
      * @return void
      */
     public function setPasswordAttribute($value)
     {
-        // Store plain text password for CIS sync before hashing
-        if (!empty($value) && !str_starts_with($value, '$2y$')) {
-            $this->plainTextPassword = $value;
-        }
-        
-        // Let Laravel handle the hashing via the cast
-        $this->attributes['password'] = $value;
+        $isHash = \Illuminate\Support\Facades\Hash::isHashed($value);
+        $this->plainTextPassword = $isHash ? null : $value;
+        $this->attributes['password'] = $isHash ? $value : \Illuminate\Support\Facades\Hash::make($value);
     }
 
     /**
